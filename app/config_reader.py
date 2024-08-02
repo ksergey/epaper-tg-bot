@@ -12,17 +12,27 @@ class TelegramConfig:
     chat_id: int = field(repr=False)
 
 @dataclass
+class KadinskyConfig:
+    key: str = field(repr=False)
+    secret: int = field(repr=False)
+
+@dataclass
 class Config:
     telegram: TelegramConfig
+    kadinsky: KadinskyConfig
 
 def load_config() -> Config:
     parser = ConfigParser()
     parser.read(args.config)
 
-    config = Config(
+    config=Config(
         telegram=TelegramConfig(
             token=parser.get('telegram', 'token'),
             chat_id=int(parser.get('telegram', 'chat_id'))
+        ),
+        kadinsky=KadinskyConfig(
+            key=parser.get('kadinsky', 'key'),
+            secret=parser.get('kadinsky', 'secret')
         )
     )
 

@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 from app.args_reader import args
 from app.config_reader import config
 from app.handlers import setup_router, setup_commands
+from app.kadinsky import Kadinsky
 
 logging.basicConfig(
     filename=args.logfile,
@@ -32,11 +33,18 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
 async def main():
     logger.info(f'config:\n{config}')
 
+    kadinsky = Kadinsky(
+        key=config.kadinsky.key,
+        secret=config.kadinsky.secret
+    )
+
     # accept messages only from configured chat id
     router = setup_router()
     router.message.filter(F.chat.id == config.telegram.chat_id)
 
-    dp = Dispatcher()
+    # pass kadinsky to dispatcher constructor
+    # now "kadinsky: Kadinsky" could be arg for a handler
+    dp = Dispatcher(kadinsky=kadinsky)
     dp.include_router(router)
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)

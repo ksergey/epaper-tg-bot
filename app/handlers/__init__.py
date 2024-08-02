@@ -5,7 +5,8 @@ from aiogram.types import Message, BotCommand
 from aiogram.filters import Command
 
 commands = [
-    BotCommand(command='help', description='show help'),
+    BotCommand(command='kadinsky', description='kadinsky text2image'),
+    BotCommand(command='help', description='show help')
 ]
 
 router = Router()
@@ -18,7 +19,10 @@ async def handler_command_help(message: Message):
     await message.answer(help_message)
 
 def setup_router() -> Router:
+    from . import kadinsky
+
     main_router = Router()
+    main_router.include_router(kadinsky.router)
 
     return main_router
 
