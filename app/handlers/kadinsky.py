@@ -1,21 +1,27 @@
 import logging
 
 from aiogram import Router
-from aiogram.types import Message
+from aiogram.types import Message, BufferedInputFile
 from aiogram.filters import Command, CommandObject
 
-from app.kadinsky import Kadinsky
+from PIL import Image, ImageEnhance
+from io import BytesIO
+
+from app.text2image import Text2Image
 
 logger = logging.getLogger(__name__)
 router = Router()
 
 @router.message(Command('kadinsky'))
-async def handler_command_kadinsky(message: Message, command: CommandObject, kadinsky: Kadinsky):
+async def handler_command_kadinsky(message: Message, command: CommandObject, text2image: Text2Image):
     notification_message = await message.answer('\N{SLEEPING SYMBOL}...')
     try:
-        script = command.args or ''
-        if script == '':
-            raise RuntimeError('empty query')
+        prompt = command.args
+        if not prompt:
+            prompt = 'Огромные грибы, румянец, детальная прорисовка'
+        images = await text2image.generate(prompt)
+        for image in images:
+            await message.reply_photo(BufferedInputFile(image, 'kadinsky.jpg'))
 
     except Exception as ex:
         await message.reply(f'\N{Heavy Ballot X} error: {ex}')

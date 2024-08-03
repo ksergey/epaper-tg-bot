@@ -8,7 +8,7 @@ from aiogram.enums import ParseMode
 from app.args_reader import args
 from app.config_reader import config
 from app.handlers import setup_router, setup_commands
-from app.kadinsky import Kadinsky
+from app.text2image import Text2Image
 
 logging.basicConfig(
     filename=args.logfile,
@@ -21,21 +21,21 @@ logger = logging.getLogger(__name__)
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
     await bot.set_my_commands(commands=setup_commands(), scope=BotCommandScopeChat(chat_id=config.telegram.chat_id))
     await bot.delete_webhook(drop_pending_updates=True)
-    await bot.send_message(
-        config.telegram.chat_id,
-        f'\N{Black Right-Pointing Pointer} <i>bot going online</i>', reply_markup=ReplyKeyboardRemove()
-    )
+    # await bot.send_message(
+    #     config.telegram.chat_id,
+    #     f'\N{Black Right-Pointing Pointer} <i>bot going online</i>', reply_markup=ReplyKeyboardRemove()
+    # )
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
-    await bot.send_message(config.telegram.chat_id, f'\N{Black Left-Pointing Pointer} <i>bot going offline</i>')
+    # await bot.send_message(config.telegram.chat_id, f'\N{Black Left-Pointing Pointer} <i>bot going offline</i>')
     await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=config.telegram.chat_id))
 
 async def main():
     logger.info(f'config:\n{config}')
 
-    kadinsky = Kadinsky(
-        key=config.kadinsky.key,
-        secret=config.kadinsky.secret
+    text2image = Text2Image(
+        api_key=config.kadinsky.key,
+        secret_key=config.kadinsky.secret
     )
 
     # accept messages only from configured chat id
@@ -44,7 +44,7 @@ async def main():
 
     # pass kadinsky to dispatcher constructor
     # now "kadinsky: Kadinsky" could be arg for a handler
-    dp = Dispatcher(kadinsky=kadinsky)
+    dp = Dispatcher(text2image=text2image)
     dp.include_router(router)
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
