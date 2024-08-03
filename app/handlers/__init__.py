@@ -19,10 +19,11 @@ async def handler_command_help(message: Message):
     await message.answer(help_message)
 
 def setup_router() -> Router:
-    from . import kadinsky
+    from . import kadinsky, photo
 
     main_router = Router()
     main_router.include_router(kadinsky.router)
+    main_router.include_router(photo.router)
 
     return main_router
 
