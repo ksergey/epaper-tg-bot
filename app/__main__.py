@@ -5,6 +5,8 @@ from aiogram import Dispatcher, Bot, F
 from aiogram.types import ReplyKeyboardRemove, BufferedInputFile, BotCommandScopeChat
 from aiogram.enums import ParseMode
 
+import epaper
+
 from app.args_reader import args
 from app.config_reader import config
 from app.handlers import setup_router, setup_commands
@@ -26,9 +28,10 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     #     f'\N{Black Right-Pointing Pointer} <i>bot going online</i>', reply_markup=ReplyKeyboardRemove()
     # )
 
-async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
+async def on_shutdown(dispatcher: Dispatcher, bot: Bot, text2image: Text2Image):
     # await bot.send_message(config.telegram.chat_id, f'\N{Black Left-Pointing Pointer} <i>bot going offline</i>')
     await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=config.telegram.chat_id))
+    await text2image.close()
 
 async def main():
     logger.info(f'config:\n{config}')
@@ -38,13 +41,16 @@ async def main():
         secret_key=config.kadinsky.secret
     )
 
+    epd = epaper.epaper('epd5in65f').EPD()
+    epd.init()
+
     # accept messages only from configured chat id
     router = setup_router()
     router.message.filter(F.chat.id == config.telegram.chat_id)
 
     # pass kadinsky to dispatcher constructor
     # now "kadinsky: Kadinsky" could be arg for a handler
-    dp = Dispatcher(text2image=text2image)
+    dp = Dispatcher(text2image=text2image, epd=epd)
     dp.include_router(router)
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)

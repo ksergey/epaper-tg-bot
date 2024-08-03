@@ -62,7 +62,8 @@ class Text2Image:
 
         while attempts > 0:
             data = await self._check_generation(uuid)
-            logging.info(f'generation status uuid={uuid} status={data['status']}')
+            status = data['status']
+            logging.info(f'generation status uuid={uuid} status={status}')
             if data['status'] == 'DONE':
                 break
             attempts -= 1
@@ -73,4 +74,8 @@ class Text2Image:
             raise Exception('failed to generate image')
 
         return [ base64.b64decode(image) for image in data["images"] ]
+
+    async def close(self):
+        if self._session:
+            await self._session.close()
 
