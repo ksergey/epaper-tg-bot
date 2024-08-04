@@ -4,7 +4,6 @@ from aiogram import Router, F, Bot
 from aiogram.types import Message
 
 from app.display import Display
-from app.convert import convert
 
 logger = logging.getLogger(__name__)
 router = Router()
@@ -16,8 +15,6 @@ async def handle_photo(message: Message, bot: Bot, display: Display):
         logger.info(f'file_id={photo.file_id}, {photo.width}x{photo.height}')
         await message.answer('Rendering on display')
         await display.render(await bot.download(photo))
-        # image = convert(await bot.download(photo), (epd.width, epd.height))
-        # epd.display(epd.getbuffer(image))
         await message.answer('Rendered')
 
     except Exception as ex:

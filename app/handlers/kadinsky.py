@@ -25,8 +25,6 @@ async def handler_command_kadinsky(message: Message, command: CommandObject, tex
 
         await message.answer('Rendering on display')
         await display.render(BytesIO(images[0]))
-        # image = convert(BytesIO(images[0]), (epd.width, epd.height))
-        # epd.display(epd.getbuffer(image))
         await message.answer('Rendered')
 
     except Exception as ex:
