@@ -5,12 +5,11 @@ from aiogram import Dispatcher, Bot, F
 from aiogram.types import ReplyKeyboardRemove, BufferedInputFile, BotCommandScopeChat
 from aiogram.enums import ParseMode
 
-import epaper
-
 from app.args_reader import args
 from app.config_reader import config
 from app.handlers import setup_router, setup_commands
 from app.text2image import Text2Image
+from app.display import Display
 
 logging.basicConfig(
     filename=args.logfile,
@@ -41,8 +40,8 @@ async def main():
         secret_key=config.kadinsky.secret
     )
 
-    epd = epaper.epaper('epd5in65f').EPD()
-    epd.init()
+    # TODO: configure?
+    display = Display('epd5in65f')
 
     # accept messages only from configured chat id
     router = setup_router()
@@ -50,7 +49,7 @@ async def main():
 
     # pass kadinsky to dispatcher constructor
     # now "kadinsky: Kadinsky" could be arg for a handler
-    dp = Dispatcher(text2image=text2image, epd=epd)
+    dp = Dispatcher(text2image=text2image, display=display)
     dp.include_router(router)
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
