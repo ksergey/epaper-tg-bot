@@ -24,6 +24,11 @@ echo_ok()
   printf "${Green}$1${Normal}\n"
 }
 
+install_deps()
+{
+  sudo apt install virtualenv libopenjp2-7
+}
+
 create_virtualenv()
 {
   echo_text "Creating virtual environment"
@@ -65,7 +70,7 @@ install_systemd_service()
 
 cat > ${HOME}/.config/systemd/user/epaper-tg-bot.service <<EOF
 [Unit]
-Description=Telegram bot for Klipper
+Description=Telegram bot for epaper display
 After=network.target
 
 [Service]
@@ -85,6 +90,7 @@ EOF
   systemctl --user enable epaper-tg-bot.service
 }
 
+install_deps
 create_virtualenv
 create_default_config
 install_systemd_service
