@@ -13,9 +13,13 @@ router = Router()
 
 @router.message(Command('help'))
 async def handler_command_help(message: Message):
-    help_message = ''.join(
+    help_message = 'commands:\n'
+    help_message += ''.join(
         f'/{command.command} - {command.description}\n' for command in commands
     )
+    help_message += '\n'
+    help_message += 'send an image to render it on display\n'
+
     await message.answer(help_message)
 
 def setup_router() -> Router:
@@ -24,6 +28,7 @@ def setup_router() -> Router:
     main_router = Router()
     main_router.include_router(kadinsky.router)
     main_router.include_router(photo.router)
+    main_router.include_router(router)
 
     return main_router
 

@@ -48,11 +48,11 @@ class Display:
 
         outputWidth, outputHeight = outputSize
         if image.width > image.height:
-            height = int(image.height * (outputWidth / image.width))
-            width = outputWidth
-        else:
             height = outputHeight
             width = int(image.width * (outputHeight / image.height))
+        else:
+            height = int(image.height * (outputWidth / image.width))
+            width = outputWidth
 
         image.thumbnail((width, height), Image.Resampling.LANCZOS)
 
