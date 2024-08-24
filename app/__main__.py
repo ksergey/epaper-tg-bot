@@ -43,9 +43,12 @@ async def main():
     # TODO: configure?
     display = Display('epd5in65f')
 
-    # accept messages only from configured chat ids
+    # accept messages only from configured chat id
     router = setup_router()
-    router.message.filter(F.chat.id.in_(config.telegram.chat_id))
+    if type(config.telegram.chat_id) == list:
+        router.message.filter(F.chat.id.in_(config.telegram.chat_id))
+    else:
+        router.message.filter(F.chat.id == config.telegram.chat_id)
 
     # pass kadinsky to dispatcher constructor
     # now "kadinsky: Kadinsky" could be arg for a handler
