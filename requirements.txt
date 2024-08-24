@@ -3,3 +3,4 @@ ujson
 aiohttp[speedups]
 pillow
 waveshare-epaper
+gpiozero

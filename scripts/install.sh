@@ -26,7 +26,7 @@ echo_ok()
 
 install_deps()
 {
-  sudo apt install virtualenv libopenjp2-7
+  sudo apt install python3-dev virtualenv libopenjp2-7
 }
 
 create_virtualenv()
@@ -66,9 +66,7 @@ install_systemd_service()
 {
   echo_text "Installing systemd unit file"
 
-  mkdir -p ${HOME}/.config/systemd/user
-
-cat > ${HOME}/.config/systemd/user/epaper-tg-bot.service <<EOF
+sudo tee /etc/systemd/system/epaper-tg-bot.service <<EOF
 [Unit]
 Description=Telegram bot for epaper display
 After=network.target
@@ -85,9 +83,9 @@ KillSignal=SIGINT
 WantedBy=default.target
 EOF
 
-  systemctl --user unmask epaper-tg-bot.service
-  systemctl --user daemon-reload
-  systemctl --user enable epaper-tg-bot.service
+  sudo systemctl unmask epaper-tg-bot.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable epaper-tg-bot.service
 }
 
 install_deps
@@ -97,4 +95,4 @@ install_systemd_service
 
 echo_ok "Klipper telegram bot was installed"
 echo_ok "Now edit ${HOME}/epaper-tg-bot.conf and start bot service"
-echo_ok "   systemctl --user start epaper-tg-bot.service"
+echo_ok "   systemctl start epaper-tg-bot.service"
