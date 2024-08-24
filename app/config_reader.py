@@ -9,7 +9,7 @@ from app.args_reader import args
 @dataclass
 class TelegramConfig:
     token: str = field(repr=False)
-    chat_id: int = field(repr=False)
+    chat_id: List[int] = field(repr=True)
 
 @dataclass
 class KadinskyConfig:
