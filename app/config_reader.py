@@ -28,7 +28,7 @@ def load_config() -> Config:
     config=Config(
         telegram=TelegramConfig(
             token=parser.get('telegram', 'token'),
-            chat_id=parser.get('telegram', 'chat_id')
+            chat_id=int(parser.get('telegram', 'chat_id'))
         ),
         kadinsky=KadinskyConfig(
             key=parser.get('kadinsky', 'key'),
